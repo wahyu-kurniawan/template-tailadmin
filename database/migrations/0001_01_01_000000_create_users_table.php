@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('status', ['pending_nda', 'pending_verification', 'active'])->default('pending_nda');
+            $table->string('nda_document_path')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
