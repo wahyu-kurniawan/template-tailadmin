@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocaleController;
 
 // Locale Switch Route
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NdaController;
 
 // dashboard pages
 Route::get('/', function () {
@@ -88,7 +90,25 @@ Route::get('/videos', function () {
 })->name('videos');
 
 
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/nda-verification', [NdaController::class, 'showForm'])->name('nda.form');
+    Route::get('/nda-download', [NdaController::class, 'downloadTemplate'])->name('nda.download');
+    Route::post('/nda-upload', [NdaController::class, 'uploadNda'])->name('nda.upload');
 
+    Route::middleware(['check.nda'])->group(function () {
+        
+        Route::get('/dashboard', function () {
+            return view('dashboard'); 
+        })->name('dashboard');
+
+        Route::middleware(['auth', 'role:admin'])->group(function () {
+            Route::get('/admin/verify-users', [AdminController::class, 'verifyUsersList'])->name('admin.verify');
+            Route::post('/admin/activate-user/{id}', [AdminController::class, 'activateUser'])->name('admin.activate');
+        });
+        
+    });
+});
 
 
 

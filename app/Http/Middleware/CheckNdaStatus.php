@@ -18,15 +18,12 @@ class CheckNdaStatus
     {
         $user = Auth::user();
 
-        // Admin selalu bebas masuk
-        if ($user && $user->role === 'admin') {
+        if ($user && $user->hasRole('admin')) {
             return $next($request);
         }
 
-        // Jika user belum aktif, arahkan ke halaman khusus NDA
         if ($user && $user->status !== 'active') {
-            // Hindari redirect loop jika sudah berada di halaman NDA atau proses logout
-            if (!$request->routeIs('nda.*') && !-$request->routeIs('logout')) {
+            if (!$request->routeIs('nda.*') && !$request->routeIs('logout')) {
                 return redirect()->route('nda.form');
             }
         }
