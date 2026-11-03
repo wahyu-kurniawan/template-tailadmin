@@ -21,8 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'status', 
-        'nda_document_path'
     ];
 
     /**
